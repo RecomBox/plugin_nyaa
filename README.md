@@ -1,6 +1,8 @@
 ## Introduction
 This is a template that help you build a plugin for [recombox_plugin_provider](https://github.com/RecomBox/recombox_plugin_provider).
+
 We use [boa_engine](https://docs.rs/boa_engine/latest/boa_engine/) to load plugin that compiled to javascript using this template `[Rust <-bridge-> Javascript]` .
+
 So be prepared to build in a very sandbox and strict environment.
 
 Note: Most additional methods and types are available in
