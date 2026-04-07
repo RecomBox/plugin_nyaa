@@ -53,12 +53,12 @@ jobs:
             --arg version "${{ steps.pkg.outputs.version }}" \
             --arg name "$PLUGIN_NAME" \
             --arg url "https://github.com/${{ github.repository }}/releases/download/v${{ steps.pkg.outputs.version }}/plugin.js" \
-            --arg icon "$ICON_URL" \
+            --arg icon_url "$ICON_URL" \
             '{
               version: $version,
               name: $name,
               url: $url,
-              icon: $icon
+              icon_url: $icon_url
             }' > latest.json
 
       - name: Create GitHub Release
