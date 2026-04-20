@@ -49,6 +49,13 @@ export default class request {
         return this;
     }
 
+    body_text(): string {
+        if (!this.output_payload) {
+            throw new Error("output_payload is not defined yet. Call 'send()' first.");
+        }
+        return new TextDecoder().decode(this.output_payload.body);
+    }
+
     body_json(): any {
         if (!this.output_payload) {
             throw new Error("output_payload is not defined yet. Call 'send()' first.");
