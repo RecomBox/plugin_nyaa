@@ -31,6 +31,7 @@ await build({
     define: {
         "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
         "global": "globalThis",
+        "navigator": "({ userAgent: 'Mozilla/5.0' })",
     },
     drop: ["console"],
     plugins: [
