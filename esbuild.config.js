@@ -1,31 +1,46 @@
 import { build } from "esbuild";
+import { polyfillNode } from "esbuild-plugin-polyfill-node";
 
-import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
-import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+const virtualShimPlugin = {
+    name: 'virtual-shim',
+    setup(build) {
+        build.onResolve({ filter: /^node:worker_threads$|^worker_threads$/ }, () => {
+            return { path: 'worker_threads', namespace: 'virtual' };
+        });
+
+        build.onLoad({ filter: /.*/, namespace: 'virtual' }, () => {
+            return {
+                contents: 'export default {};',
+                loader: 'js',
+            };
+        });
+    },
+};
 
 await build({
-    entryPoints: ["src/plugin.ts"],   // main entry, imports like test.ts are included
-    bundle: true,                     // follow imports and bundle them
-    platform: "neutral",              // avoid Node built-ins
-    format: "iife",                   // wrap into one global file
-    minify: true,                     // shrink internal helpers
-    outfile: "dist/plugin.js",        // output location
-    globalName: "plugin",             // exposed as Plugin.get_torrent / Plugin.select_source
-    keepNames: true,                  // preserve exported function names
+    entryPoints: ["src/plugin.ts"],
+    bundle: true,
+    platform: "neutral",
+    format: "iife",
+    globalName: "plugin",
+    minify: true,
+    keepNames: true,
+    mainFields: ["module", "main"],
+    outfile: "dist/plugin.js",
+    external: ["node:*"],
     define: {
         "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV || "development"),
+        "global": "globalThis",
     },
     drop: ["console"],
     plugins: [
-        nodeModulesPolyfillPlugin({
-            globals: {
-                Buffer: true,
+        virtualShimPlugin,
+        polyfillNode({
+            polyfills: {
+                stream: true,
+                buffer: true,
                 process: true,
             },
-        }),
-        NodeGlobalsPolyfillPlugin({
-            buffer: true,
-            process: true,
-        }),
+        })
     ],
 });
