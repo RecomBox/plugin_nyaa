@@ -20,16 +20,18 @@ export default async function start_get_torrents(input_payload: InputPayload): P
     
 
     let cio = cheerio.load(res.body_text());
-    let raw_title = decodeHTML(cio("h3.panel-title").eq(0).text());
+    let raw_title = decodeHTML(cio("h3.panel-title").eq(0).text().trim());
 
     
     let panel_body = cio("div.panel-body").eq(0);
 
     let seeders = panel_body.find("div.row").eq(1).find("div.col-md-5").find("span").text();
 
-    console.log(seeders);
-
-    // console.log(title);
-
-    throw new Error("Not implemented");
+    let title = `${raw_title} [seeders: ${seeders}]`;
+    let torrent_url = `https://nyaa.si/download/${input_payload.id}.torrent`
+    
+    return [{
+        title,
+        torrent_url: torrent_url,
+    }]
 }

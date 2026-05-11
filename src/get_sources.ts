@@ -38,7 +38,7 @@ export default async function start_get_sources(input_payload: InputPayload): Pr
         let td_list = tr.find("td");
         let a_ele = td_list.eq(1).find("a:not(.comments)");
         
-        let raw_title = a_ele.attr("title");
+        let raw_title = a_ele.attr("title")?.trim();
         let seeds = td_list.eq(5).text();
 
         let id = a_ele.attr("href")?.split("/").at(-1)!;
