@@ -1,6 +1,6 @@
 import { build } from "esbuild";
 
-import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
+import { nodeModulesPolyfillPlugin } from "esbuild-plugins-node-modules-polyfill";
 import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
 
 await build({
@@ -17,7 +17,12 @@ await build({
     },
     drop: ["console"],
     plugins: [
-        NodeModulesPolyfillPlugin(),
+        nodeModulesPolyfillPlugin({
+            globals: {
+                Buffer: true,
+                process: true,
+            },
+        }),
         NodeGlobalsPolyfillPlugin({
             buffer: true,
             process: true,
